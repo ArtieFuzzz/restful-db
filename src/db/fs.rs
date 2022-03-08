@@ -1,9 +1,11 @@
+use crate::db::cache;
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::path::Path;
+use std::sync::Mutex;
 
 lazy_static! {
     static ref BASE_DIR: String = format!(
@@ -11,10 +13,15 @@ lazy_static! {
         env::current_dir().unwrap().to_str().unwrap().to_string(),
         "rdb"
     );
+    static ref CACHE: Mutex<cache::ReadCache> = Mutex::new({
+        let mut c = cache::ReadCache::new();
+
+        c
+    });
 }
 
-pub fn write(table: String, name: String, data: String) -> Result<(), Box<dyn Error>> {
-    let file_name = format!("{}\\{}_{}", BASE_DIR.to_string(), table, name);
+pub fn create(key: String, data: String) -> Result<(), Box<dyn Error>> {
+    let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
     if !file_path.exists() {
@@ -26,13 +33,13 @@ pub fn write(table: String, name: String, data: String) -> Result<(), Box<dyn Er
         .append(true)
         .open(file_path)?;
 
-    file.write_all(format!("{:?}", data).as_bytes()).unwrap();
+    file.write_all(data.as_bytes()).unwrap();
 
     Ok(())
 }
 
-pub fn delete(table: String, name: String) -> Result<String, Box<dyn Error>> {
-    let file_name = format!("{}\\{}_{}", BASE_DIR.to_string(), table, name);
+pub fn delete(key: String) -> Result<String, Box<dyn Error>> {
+    let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
     if !file_path.exists() {
@@ -44,15 +51,21 @@ pub fn delete(table: String, name: String) -> Result<String, Box<dyn Error>> {
     return Ok("removed".to_string());
 }
 
-pub fn read(table: String, name: String) -> Result<String, Box<dyn Error>> {
-    let file_name = format!("{}\\{}_{}", BASE_DIR.to_string(), table, name);
+pub fn read(key: String) -> Result<String, Box<dyn Error>> {
+    let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
+
+    if CACHE.lock()?.exists(key.clone()) {
+        return Ok(CACHE.lock()?.get(key));
+    }
 
     if !file_path.exists() {
         return Ok("file does not exist".to_string());
     }
 
     let content = fs::read_to_string(file_path)?;
+
+    CACHE.lock()?.add(key, content.clone());
 
     Ok(content)
 }

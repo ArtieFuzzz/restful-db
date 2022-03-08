@@ -1,5 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(const_fmt_arguments_new)]
+#![feature(option_result_contains)]
 
 #[macro_use]
 extern crate rocket;

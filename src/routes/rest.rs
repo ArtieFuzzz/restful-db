@@ -9,19 +9,19 @@ pub struct Data {
     data: String,
 }
 
-#[post("/<table>/<name>", data = "<data>", format = "json")]
-pub fn create(_tk: Token, data: Json<Data>, table: &str, name: &str) {
+#[post("/<key>", data = "<data>", format = "json")]
+pub fn create(_tk: Token, data: Json<Data>, key: &str) {
     let d = data.into_inner();
 
-    return fs::write(table.to_string(), name.to_string(), d.data).unwrap();
+    return fs::create(key.to_string(), d.data).unwrap();
 }
 
-#[get("/<table>/<name>")]
-pub fn read(_tk: Token, table: &str, name: &str) -> String {
-    return fs::read(table.to_string(), name.to_string()).unwrap();
+#[get("/<key>")]
+pub fn read(_tk: Token, key: &str) -> String {
+    return fs::read(key.to_string()).unwrap();
 }
 
-#[delete("/<table>/<name>")]
-pub fn delete(_tk: Token, table: &str, name: &str) -> String {
-    return fs::delete(table.to_string(), name.to_string()).unwrap();
+#[delete("/<key>")]
+pub fn delete(_tk: Token, key: &str) -> String {
+    return fs::delete(key.to_string()).unwrap();
 }
