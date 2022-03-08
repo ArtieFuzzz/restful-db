@@ -7,10 +7,16 @@ edition = "2021"
 
 [dependencies]
 # HTTP framework
-rocket = { git = "https://github.com/SergioBenitez/Rocket", rev = "91e3b43" }
+rocket = { git = "https://github.com/SergioBenitez/Rocket", rev = "91e3b43", features = ["json"] }
 # Auth dependencies
 jwt = "0.16.0"
 hmac = "0.12.1"
 sha2 = "0.10.2"
-# CLI
-clap ={ version = "3.1.5", features = ["derive"] }
+# CLI (No longer using but, just commented out for future use :P)
+# clap ={ version = "3.1.5", features = ["derive"] }
+# Serde Serilization
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
+# Static Variables
+lazy_static = "1.4.0"

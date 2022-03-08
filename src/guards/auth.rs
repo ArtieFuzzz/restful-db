@@ -1,5 +1,4 @@
-use std::collections::BTreeMap;
-
+use crate::config::read_config;
 use hmac::{Hmac, Mac};
 use jwt::VerifyWithKey;
 use rocket::{
@@ -9,6 +8,7 @@ use rocket::{
     Request,
 };
 use sha2::Sha256;
+use std::collections::BTreeMap;
 
 pub struct Token(String);
 
@@ -29,7 +29,8 @@ impl<'r> FromRequest<'r> for Token {
             return Outcome::Failure((Status::BadRequest, ApiTokenError::Missing));
         }
 
-        let key: Hmac<Sha256> = Hmac::new_from_slice(b"secret").unwrap();
+        let config = read_config().unwrap();
+        let key: Hmac<Sha256> = Hmac::new_from_slice(config.key.as_bytes()).unwrap();
 
         let claims: BTreeMap<String, String> =
             header.verify_with_key(&key).unwrap_or(BTreeMap::new());
