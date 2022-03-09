@@ -26,7 +26,7 @@ pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str)
         return response!(Status::Conflict, "file already exists");
     }
 
-    return response!(Status::Ok, "");
+    return response!(Status::Created, "");
 }
 
 #[put("/<key>", data = "<data>", format = "json")]
