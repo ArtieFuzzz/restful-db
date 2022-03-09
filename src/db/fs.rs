@@ -34,7 +34,7 @@ pub fn create(key: String, data: String) -> Result<(), Box<dyn Error>> {
         .append(true)
         .open(file_path)?;
 
-    file.write_all(data.as_bytes()).unwrap();
+    file.write_all(data.as_bytes())?;
 
     Ok(())
 }
