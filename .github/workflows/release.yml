@@ -26,7 +26,7 @@ jobs:
         uses: stepchowfun/toast/.github/actions/toast@main
         with:
           tasks: release
-          write_remote_cache: false
+          write_remote_cache: true
       - run: |
           mv artifacts/rdb-x86_64-unknown-linux-gnu artifacts/rdb
       - uses: actions/upload-artifact@v2
