@@ -8,20 +8,24 @@ extern crate rocket;
 #[macro_use]
 extern crate lazy_static;
 
+extern crate base64;
+
 mod catchers;
 mod config;
 mod db;
 mod guards;
 mod routes;
-mod utils;
 
 use catchers::*;
 use routes::rest;
 use routes::root;
-use utils::generate_admin_token;
 
 use rocket::{config::Ident, Config};
 
+use hmac::{Hmac, Mac};
+use jwt::SignWithKey;
+use sha2::Sha256;
+use std::collections::BTreeMap;
 use std::env;
 
 lazy_static! {
@@ -30,6 +34,18 @@ lazy_static! {
         env::current_dir().unwrap().to_str().unwrap().to_string(),
         "rdb"
     );
+}
+
+fn generate_admin_token(username: String, string_key: String) -> String {
+    let key: Hmac<Sha256> = Hmac::new_from_slice(string_key.as_bytes()).unwrap();
+    let mut claims = BTreeMap::new();
+
+    claims.insert("admin", "yes");
+    claims.insert("sub", &username);
+
+    let signed_token = claims.sign_with_key(&key).unwrap();
+
+    return signed_token;
 }
 
 #[launch]

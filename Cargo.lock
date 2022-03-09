@@ -927,6 +927,7 @@ dependencies = [
 name = "restful-db"
 version = "0.1.0"
 dependencies = [
+ "base64",
  "hmac",
  "jwt",
  "lazy_static",

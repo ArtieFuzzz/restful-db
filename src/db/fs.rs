@@ -1,4 +1,5 @@
 use crate::db::cache;
+use crate::db::utils::{de, en};
 use std::env;
 use std::error::Error;
 use std::fs;
@@ -36,7 +37,7 @@ pub fn create(key: String, data: String) -> Result<bool, Box<dyn Error>> {
         .append(true)
         .open(file_path)?;
 
-    file.write_all(data.as_bytes())?;
+    file.write_all((en(data)).as_bytes())?;
 
     return Ok(true);
 }
@@ -66,7 +67,7 @@ pub fn read(key: String) -> Result<String, Box<dyn Error>> {
         return Ok("file does not exist".to_string());
     }
 
-    let content = fs::read_to_string(file_path)?;
+    let content = de(fs::read_to_string(file_path)?);
 
     CACHE.lock()?.add(key, content.clone());
 
