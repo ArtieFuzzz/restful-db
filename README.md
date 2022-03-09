@@ -22,6 +22,7 @@ Requirements:
 - Have Toast installed. (Optional)
 
 Building from the source: `cargo build` / `cargo build --release`
+
 Or you can directly run it: `cargo run` / `cargo run --release`
 
 ## Usage
