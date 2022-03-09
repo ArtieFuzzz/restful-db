@@ -51,7 +51,7 @@ jobs:
             exit
           fi
           mv artifacts/x86_64-pc-windows-msvc/rdb.exe artifacts/rdb-x86_64-pc-windows-msvc.exe
-          mv artifacts/x86_64-unknown-linux-gnu/arc artifacts/rdb-x86_64-unknown-linux-gnu
+          mv artifacts/x86_64-unknown-linux-gnu/rdb artifacts/rdb-x86_64-unknown-linux-gnu
           hub release create --commitish '${{ github.sha }}' \
             --message "v$VERSION" \
             --attach artifacts/rdb-x86_64-pc-windows-msvc.exe \
