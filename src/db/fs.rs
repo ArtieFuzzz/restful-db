@@ -14,6 +14,7 @@ lazy_static! {
         "rdb"
     );
     static ref CACHE: Mutex<cache::ReadCache> = Mutex::new({
+        #[allow(unused_mut)]
         let mut c = cache::ReadCache::new();
 
         c
