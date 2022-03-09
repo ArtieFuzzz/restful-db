@@ -1,4 +1,4 @@
-use crate::db::fs;
+use crate::db::operations;
 use crate::guards::auth::Token;
 use rocket::http::Status;
 use rocket::serde::json::Json;
@@ -20,7 +20,7 @@ macro_rules! response {
 pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str) {
     let d = data.into_inner();
 
-    let success = fs::create(key.to_string(), d.data).unwrap();
+    let success = operations::create(key.to_string(), d.data).unwrap();
 
     if !success {
         return response!(Status::Conflict, "file already exists");
@@ -31,10 +31,10 @@ pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str)
 
 #[get("/<key>")]
 pub fn read(_tk: Token, key: &str) -> String {
-    return fs::read(key.to_string()).unwrap();
+    return operations::read(key.to_string()).unwrap();
 }
 
 #[delete("/<key>")]
 pub fn delete(_tk: Token, key: &str) -> String {
-    return fs::delete(key.to_string()).unwrap();
+    return operations::delete(key.to_string()).unwrap();
 }
