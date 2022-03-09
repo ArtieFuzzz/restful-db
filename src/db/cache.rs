@@ -62,4 +62,16 @@ impl ReadCache {
             return false;
         }
     }
+
+    pub fn delete<S: Into<String>>(&self, key: S) -> bool {
+        let k = key.into();
+
+        if self.exists(k.clone()) {
+            let _ = self.cache.write().ok().and_then(|mut g| g.remove(&k));
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

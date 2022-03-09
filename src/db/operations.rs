@@ -22,22 +22,26 @@ lazy_static! {
     });
 }
 
-pub fn create(key: String, data: String) -> Result<bool, Box<dyn Error>> {
+pub fn create(key: String, data: String, overwrite: bool) -> Result<bool, Box<dyn Error>> {
     let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
-    if file_path.exists() {
+    if file_path.exists() && !overwrite {
         return Ok(false);
     }
 
     fs::File::create(file_path)?;
 
     let mut file = OpenOptions::new()
-        .write(false)
+        .write(overwrite)
         .append(true)
         .open(file_path)?;
 
     file.write_all((en(data)).as_bytes())?;
+
+    if overwrite {
+        CACHE.lock()?.delete(key);
+    }
 
     return Ok(true);
 }
