@@ -17,9 +17,9 @@ impl ReadCache {
         };
     }
 
-    pub fn add(&mut self, key: String, value: String) {
+    pub fn add(&mut self, key: String, value: String) -> bool {
         if self.exists(key.clone()) {
-            return;
+            return false;
         } else {
             let _ = &self
                 .cache
@@ -28,7 +28,7 @@ impl ReadCache {
                 .and_then(|mut g| g.insert(key, value));
         }
 
-        return;
+        return true;
     }
 
     pub fn get(&self, key: String) -> String {
@@ -51,7 +51,10 @@ impl ReadCache {
             .cache
             .read()
             .ok()
-            .and_then(|g| Some(g.contains_key(&key.into())))
+            .and_then(|g| {
+                let gs = &key.into();
+                Some(g.contains_key(gs))
+            })
             .unwrap()
         {
             return true;

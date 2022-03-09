@@ -52,12 +52,12 @@ pub fn delete(key: String) -> Result<String, Box<dyn Error>> {
 }
 
 pub fn read(key: String) -> Result<String, Box<dyn Error>> {
-    let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
-    let file_path = Path::new(&file_name);
-
     if CACHE.lock()?.exists(key.clone()) {
         return Ok(CACHE.lock()?.get(key));
     }
+
+    let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
+    let file_path = Path::new(&file_name);
 
     if !file_path.exists() {
         return Ok("file does not exist".to_string());
