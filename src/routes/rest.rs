@@ -10,6 +10,12 @@ pub struct Data {
     data: String,
 }
 
+macro_rules! response {
+    ($status:expr, $message:literal) => {
+        ($status, $message)
+    };
+}
+
 #[post("/<key>", data = "<data>", format = "json")]
 pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str) {
     let d = data.into_inner();
@@ -17,10 +23,10 @@ pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str)
     let success = fs::create(key.to_string(), d.data).unwrap();
 
     if !success {
-        return (Status::Conflict, "file already exists.");
+        return response!(Status::Conflict, "file already exists");
     }
 
-    return (Status::Ok, "file created.");
+    return response!(Status::Ok, "file created");
 }
 
 #[get("/<key>")]
