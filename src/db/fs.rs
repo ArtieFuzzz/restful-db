@@ -21,13 +21,15 @@ lazy_static! {
     });
 }
 
-pub fn create(key: String, data: String) -> Result<(), Box<dyn Error>> {
+pub fn create(key: String, data: String) -> Result<bool, Box<dyn Error>> {
     let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
-    if !file_path.exists() {
-        fs::File::create(file_path)?;
+    if file_path.exists() {
+        return Ok(false);
     }
+
+    fs::File::create(file_path)?;
 
     let mut file = OpenOptions::new()
         .write(false)
@@ -36,7 +38,7 @@ pub fn create(key: String, data: String) -> Result<(), Box<dyn Error>> {
 
     file.write_all(data.as_bytes())?;
 
-    Ok(())
+    return Ok(true);
 }
 
 pub fn delete(key: String) -> Result<String, Box<dyn Error>> {

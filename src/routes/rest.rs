@@ -1,5 +1,6 @@
 use crate::db::fs;
 use crate::guards::auth::Token;
+use rocket::http::Status;
 use rocket::serde::json::Json;
 use rocket::serde::Deserialize;
 
@@ -10,10 +11,16 @@ pub struct Data {
 }
 
 #[post("/<key>", data = "<data>", format = "json")]
-pub fn create(_tk: Token, data: Json<Data>, key: &str) {
+pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str) {
     let d = data.into_inner();
 
-    return fs::create(key.to_string(), d.data).unwrap();
+    let success = fs::create(key.to_string(), d.data).unwrap();
+
+    if !success {
+        return (Status::Conflict, "file already exists.");
+    }
+
+    return (Status::Ok, "file created.");
 }
 
 #[get("/<key>")]
