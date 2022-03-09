@@ -1,0 +1,26 @@
+image: rust:latest
+
+default: build
+
+tasks:
+  build:
+    description: Builds RDB
+    input_paths:
+      - src
+      - ./Cargo.lock
+      - ./Cargo.toml
+      - ./rust-toolchain.toml
+    command: cargo build
+  release:
+    description: Build binaries for Linux
+    input_paths:
+      - src
+      - ./Cargo.lock
+      - ./Cargo.toml
+      - ./rust-toolchain.toml
+    output_paths:
+      - artifacts
+    command: |
+      cargo build --release
+      mkdir artifacts
+      cp target/release/restful-db artifacts/rdb-x86_64-unknown-linux-gnu

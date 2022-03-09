@@ -1,4 +1,5 @@
 /target
+/artifacts
 
 rdb
 config.yml

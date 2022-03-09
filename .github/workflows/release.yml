@@ -1,0 +1,59 @@
+name: Release
+
+on: [push, pull_request]
+
+jobs:
+  ci-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - run: |
+          cargo build --release --target x86_64-pc-windows-msvc
+          mkdir artifacts
+          mv target/x86_64-pc-windows-msvc/release/restful-db.exe artifacts/rdb.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: x86_64-pc-windows-msvc
+          path: artifacts/rdb.exe
+          if-no-files-found: error
+  ci-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Toast
+        uses: stepchowfun/toast/.github/actions/toast@main
+        with:
+          tasks: release
+          write_remote_cache: false
+      - run: |
+          mv artifacts/rdb-x86_64-unknown-linux-gnu artifacts/rdb
+      - uses: actions/upload-artifact@v2
+        with:
+          name: x86_64-unknown-linux-gnu
+          path: artifacts/rdb
+          if-no-files-found: error
+  upload:
+    runs-on: ubuntu-latest
+    needs: [ci-linux, ci-windows]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts/
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="$(cargo pkgid | cut -d# -f2 | cut -d: -f2)"
+          if hub release show "v$VERSION" &> /dev/null; then
+            echo "Release v$VERSION already exists."
+            exit
+          fi
+          mv artifacts/x86_64-pc-windows-msvc/rdb.exe artifacts/rdb-x86_64-pc-windows-msvc.exe
+          mv artifacts/x86_64-unknown-linux-gnu/arc artifacts/rdb-x86_64-unknown-linux-gnu
+          hub release create --commitish '${{ github.sha }}' \
+            --message "v$VERSION" \
+            --attach artifacts/rdb-x86_64-pc-windows-msvc.exe \
+            --attach artifacts/rdb-x86_64-unknown-linux-gnu \
+            "v$VERSION"
