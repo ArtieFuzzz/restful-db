@@ -2,7 +2,7 @@ use rocket::Request;
 
 #[catch(404)]
 pub fn not_found(req: &Request) -> String {
-    format!("{} Is an invalid route.", req.uri())
+    format!("{} {} Is an invalid route.", req.method(), req.uri())
 }
 
 #[catch(500)]
