@@ -2,12 +2,11 @@ use crate::db::operations;
 use crate::guards::auth::Token;
 use rocket::http::Status;
 use rocket::serde::json::Json;
-use rocket::serde::Deserialize;
+use rocket::serde::{Deserialize, Serialize};
 
-#[derive(Deserialize)]
-#[serde(crate = "rocket::serde")]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Data {
-    data: String,
+    pub data: String,
 }
 
 macro_rules! response {

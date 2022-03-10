@@ -8,7 +8,7 @@ extern crate rocket;
 #[macro_use]
 extern crate lazy_static;
 
-extern crate base64;
+extern crate bincode;
 
 mod catchers;
 mod config;

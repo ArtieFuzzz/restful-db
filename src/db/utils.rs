@@ -1,11 +1,11 @@
-use base64::{decode, encode};
-use std::str;
+use crate::rest::Data;
+use bincode;
+use std::error::Error;
 
-pub fn en(data: String) -> String {
-    return encode(data);
+pub fn en(data: Data) -> Result<Vec<u8>, Box<dyn Error>> {
+    return Ok(bincode::serialize(&data)?);
 }
 
-pub fn de(data: String) -> String {
-    let bytes = &decode(data).unwrap()[..];
-    return String::from(str::from_utf8(bytes).unwrap());
+pub fn de(data: Vec<u8>) -> Result<Data, Box<dyn Error>> {
+    return Ok(bincode::deserialize(&data[..])?);
 }
