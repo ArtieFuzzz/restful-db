@@ -40,7 +40,7 @@ impl ReadCache {
                 .and_then(|g| g.get::<String>(&key.into()).map(|val| val.clone()))
                 .unwrap();
 
-            return String::from(v.as_str());
+            return v;
         } else {
             return String::from("Does not exist");
         }
