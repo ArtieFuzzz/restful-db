@@ -1,3 +1,4 @@
+use crate::config;
 use crate::db::cache;
 use crate::db::utils::{de, en};
 use crate::rest::Data;
@@ -10,11 +11,8 @@ use std::path::Path;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref BASE_DIR: String = format!(
-        "{}\\{}",
-        env::current_dir().unwrap().to_str().unwrap().to_string(),
-        "rdb"
-    );
+    static ref CONFIG: config::Config = config::read_config().unwrap();
+    static ref BASE_DIR: String = format!("{}", CONFIG.path);
     static ref CACHE: Mutex<cache::ReadCache> = Mutex::new({
         #[allow(unused_mut)]
         let mut c = cache::ReadCache::new();
