@@ -23,7 +23,7 @@ lazy_static! {
     });
 }
 
-pub fn create(key: String, data: String, overwrite: bool) -> Result<bool, Box<dyn Error>> {
+pub fn write(key: String, data: String, overwrite: bool) -> Result<bool, Box<dyn Error>> {
     let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
@@ -47,17 +47,17 @@ pub fn create(key: String, data: String, overwrite: bool) -> Result<bool, Box<dy
     return Ok(true);
 }
 
-pub fn delete(key: String) -> Result<String, Box<dyn Error>> {
+pub fn delete(key: String) -> Result<&'static str, Box<dyn Error>> {
     let file_name = format!("{}\\{}", BASE_DIR.to_string(), key);
     let file_path = Path::new(&file_name);
 
     if !file_path.exists() {
-        return Ok("file does not exist".to_string());
+        return Ok("file does not exist");
     }
 
     fs::remove_file(file_path)?;
 
-    return Ok("removed".to_string());
+    return Ok("removed file");
 }
 
 pub fn read(key: String) -> Result<String, Box<dyn Error>> {
@@ -72,9 +72,9 @@ pub fn read(key: String) -> Result<String, Box<dyn Error>> {
         return Ok("file does not exist".to_string());
     }
 
-    let data = de(fs::read_to_string(file_path)?.into_bytes())?;
+    let d = de(fs::read_to_string(file_path)?.into_bytes())?;
 
-    CACHE.lock()?.add(key, data.data.clone());
+    CACHE.lock()?.add(key, d.data.clone());
 
-    Ok(data.data)
+    Ok(d.data)
 }

@@ -80,6 +80,6 @@ fn rocket() -> _ {
         .mount("/", routes![root::home])
         .mount(
             "/rest/",
-            routes![rest::create, rest::read, rest::delete, rest::put],
+            routes![rest::write, rest::read, rest::delete, rest::overwrite],
         )
 }

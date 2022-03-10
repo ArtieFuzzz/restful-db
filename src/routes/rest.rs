@@ -16,10 +16,10 @@ macro_rules! response {
 }
 
 #[post("/<key>", data = "<data>", format = "json")]
-pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str) {
+pub fn write(_tk: Token, data: Json<Data>, key: String) -> (Status, &'static str) {
     let d = data.into_inner();
 
-    let success = operations::create(key.to_string(), d.data, false).unwrap();
+    let success = operations::write(key, d.data, false).unwrap();
 
     if !success {
         return response!(Status::Conflict, "file already exists");
@@ -29,20 +29,20 @@ pub fn create(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str)
 }
 
 #[put("/<key>", data = "<data>", format = "json")]
-pub fn put(_tk: Token, data: Json<Data>, key: &str) -> (Status, &'static str) {
+pub fn overwrite(_tk: Token, data: Json<Data>, key: String) -> (Status, &'static str) {
     let d = data.into_inner();
 
-    operations::create(key.to_string(), d.data, true).unwrap();
+    operations::write(key, d.data, true).unwrap();
 
     return response!(Status::Ok, "");
 }
 
 #[get("/<key>")]
-pub fn read(_tk: Token, key: &str) -> String {
-    return operations::read(key.to_string()).unwrap();
+pub fn read(_tk: Token, key: String) -> String {
+    return operations::read(key).unwrap();
 }
 
 #[delete("/<key>")]
-pub fn delete(_tk: Token, key: &str) -> String {
-    return operations::delete(key.to_string()).unwrap();
+pub fn delete(_tk: Token, key: String) -> &'static str {
+    return operations::delete(key).unwrap();
 }
