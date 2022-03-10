@@ -934,7 +934,7 @@ dependencies = [
 
 [[package]]
 name = "restful-db"
-version = "0.5.2"
+version = "0.5.3"
 dependencies = [
  "bincode",
  "hmac",

@@ -51,10 +51,7 @@ impl ReadCache {
             .cache
             .read()
             .ok()
-            .and_then(|g| {
-                let gs = &key.into();
-                Some(g.contains_key(gs))
-            })
+            .and_then(|g| Some(g.contains_key(&key.into())))
             .unwrap()
         {
             return true;
