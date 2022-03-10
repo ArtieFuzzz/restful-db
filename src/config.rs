@@ -9,6 +9,7 @@ use std::path::Path;
 pub struct Config {
     pub key: String,
     pub admin_name: String,
+    pub path: String,
 }
 
 pub fn read_config() -> Result<Config, Box<dyn Error>> {
@@ -17,6 +18,7 @@ pub fn read_config() -> Result<Config, Box<dyn Error>> {
         env::current_dir().unwrap().to_str().unwrap().to_string(),
         "config.yml"
     );
+
     let path = Path::new(&base);
 
     if !path.exists() {
@@ -31,6 +33,7 @@ pub fn read_config() -> Result<Config, Box<dyn Error>> {
         let conf = Config {
             key: "".to_owned(),
             admin_name: "admin".to_owned(),
+            path: "./rdb".to_owned(),
         };
 
         serde_yaml::to_writer(w, &conf).expect("Failed to write config file");

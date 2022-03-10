@@ -56,7 +56,7 @@ fn rocket() -> _ {
 
     println!("{}", token);
 
-    std::fs::create_dir_all(BASE_DIR.to_string()).unwrap();
+    std::fs::create_dir_all(config.path).unwrap();
 
     let config = Config {
         port: 7892,
