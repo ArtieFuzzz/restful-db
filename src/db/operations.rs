@@ -1,5 +1,5 @@
 use crate::config;
-use crate::db::cache;
+use crate::db::cache::ReadCache;
 use crate::db::utils::{de, en};
 use crate::rest::Data;
 use std::error::Error;
@@ -12,12 +12,7 @@ use std::sync::Mutex;
 lazy_static! {
     static ref CONFIG: config::Config = config::read_config().unwrap();
     static ref BASE_DIR: String = format!("{}", CONFIG.path);
-    static ref CACHE: Mutex<cache::ReadCache> = Mutex::new({
-        #[allow(unused_mut)]
-        let mut c = cache::ReadCache::new();
-
-        c
-    });
+    static ref CACHE: Mutex<ReadCache> = Mutex::new(ReadCache::new());
 }
 
 pub fn write(key: String, data: String, overwrite: bool) -> Result<bool, Box<dyn Error>> {

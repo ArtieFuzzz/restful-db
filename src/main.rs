@@ -20,7 +20,10 @@ use catchers::*;
 use routes::rest;
 use routes::root;
 
-use rocket::{config::Ident, Config};
+use rocket::{
+    config::{Ident, LogLevel},
+    Config,
+};
 
 use hmac::{Hmac, Mac};
 use jwt::SignWithKey;
@@ -62,6 +65,7 @@ fn rocket() -> _ {
         port: 7892,
         keep_alive: 60,
         ident: Ident::none(),
+        log_level: LogLevel::Critical,
         ..Config::debug_default()
     };
 
