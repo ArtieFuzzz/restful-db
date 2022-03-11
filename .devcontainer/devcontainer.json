@@ -1,4 +1,8 @@
 {
-  "build": { "dockerfile": "Dockerfile" },
-  "extensions": ["aaron-bond.better-comments", "matklad.rust-analyzer"]
+  "name": "Dev",
+  "image": "artiefuzzz/codespace:rust",
+  "extensions": ["aaron-bond.better-comments", "matklad.rust-analyzer"],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "zsh"
+  }
 }
