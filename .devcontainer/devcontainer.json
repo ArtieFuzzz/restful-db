@@ -1,0 +1,4 @@
+{
+  "build": { "dockerfile": "Dockerfile" },
+  "extensions": ["aaron-bond.better-comments", "matklad.rust-analyzer"]
+}
